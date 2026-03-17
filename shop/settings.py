@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,11 +27,11 @@ LOCALE_PATHS = [
 SECRET_KEY = 'django-insecure-@w#r!685l+1h6*x+yw(+dl+f0i2pu7g-o^mxuj_-0)wtk3s=#4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF =True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["my-django-site.onrender.com"]
 
 
 # Application definition
@@ -136,7 +136,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR / "staticfiles")
 
 MEDIS_URL = "/media/"
 MEDIA_ROOT = "media"
