@@ -1,0 +1,170 @@
+<html lang="{{ request.LANGUAGE_CODE }}">
+{% load static %}
+{% load i18n %}
+
+
+<head>
+    <link rel="prefetch" href="nextpage.html">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}?v=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div id="transition-overlay"></div>
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <span>⟨</span>
+            <span>{% trans "Back" %}</span>
+        </button>
+
+        <a href="{% url 'product_list' %}" class="home">...</a>
+
+        <P></P>
+    </div>
+
+    <div class="main">
+        {% for image in product.images.all %}
+            <img src="{{ image.image.url }}" loading="lazy" onclick="openViewer(this)" class="product-image">
+        {% endfor %}
+    </div>
+
+    <div class="detail">
+        <div class="info">
+            <p><strong class="info-text">{% trans "Model:" %}</strong> {{ product.name }}</p>
+            <p><strong class="info-text">{% trans "Year:" %}</strong> {{ product.year }}</p>
+            <p><strong class="info-text">{% trans "Price:" %}</strong> {{ product.price }}</p>
+        </div>
+
+        <div class="description">
+            <p >{{ product.description }}</p>
+        </div>
+
+        <div class="contact">
+            <div class="message">{% trans "Contact:" %}</div>
+            
+            <div class="icon">
+                <div class="phone-icon">
+                    <a href="tel:+959979374737"><strong>{% trans "Phone:" %} </strong>0912345678</a>
+                </div>
+                
+                <div class="telegram-icon">
+                    <a href="https://t.me/@rustin_cohle666"><strong>{% trans "Telegram" %}</strong>
+                    <img src="{% static 'images/telegramicon.png' %}" class="icon-img"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewer" class="viewer">
+        <button class="viewer-close" onclick="closeViewer()">X</button>
+
+        <button class="viewer-arrow left" onclick="prevImage()">⟨</button>
+
+        <img id="viewer-img">
+
+        <button class="viewer-arrow right" onclick="nextImage()">⟩</button>
+    </div>
+
+    <script>
+        const viewer = document.getElementById("viewer")
+        const viewerImg = document.getElementById("viewer-img")
+
+        let images = []
+        let currentImage = 0
+
+        document.querySelectorAll(".product-image").forEach((img,i)=>{
+            images.push(img.src)
+        })
+
+        function openViewer(img){
+            currentImage = images.indexOf(img.src)
+
+            viewerImg.src = img.src
+            viewer.style.display = "flex"
+        }
+
+        function closeViewer(){
+            viewer.style.display = "none"
+        }
+
+        function nextImage(){
+           
+            currentImage++
+
+            if(currentImage >= images.length){
+                currentImage = 0
+            }
+
+        viewerImg.src = images[currentImage]
+
+        }
+
+        function prevImage(){
+
+            currentImage--
+
+            if(currentImage < 0){
+                currentImage = images.length-1
+            }
+
+            viewerImg.src = images[currentImage]
+        }
+    </script>
+
+    <script>
+        let startX = 0
+
+        viewer.addEventListener("touchstart", e=>{
+            startX = e.touches[0].clientX
+        })
+
+        viewer.addEventListener("touchend", e=>{
+
+            let endX = e.changedTouches[0].clientX
+        
+
+        if(startX - endX > 50){
+            nextImage()
+        }
+
+        if(endX - startX > 50){
+            prevImage()
+        }
+
+    })
+    </script>
+
+   
+    <script>
+    const overlay = document.getElementById("transition-overlay");
+
+    window.addEventListener("pageshow", () =>{
+        document.body.classList.add("page-visible");
+
+        setTimeout(()=>{
+            overlay.classList.add("hidden");
+        },200);
+    });
+
+    document.querySelectorAll('a[href]').forEach(link => {
+        if(link.hostname !== window.location.hostname) return;
+        if(link.getAttribute("href").startsWith("#")) return;
+
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const url = link.href;
+
+            overlay.classList.remove("hidden");
+            document.body.classList.remove("page-visible");
+
+            setTimeout(() => {
+                window.location = url;
+            }, 500);
+        });
+    });
+
+    </script>
+    
+</body>
+
+</html>

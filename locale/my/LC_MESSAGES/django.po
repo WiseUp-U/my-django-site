@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-16 11:11+0630\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\products\templates\products\product_detail.html:15
+msgid "Back"
+msgstr "နောက်သို့"
+
+#: .\products\templates\products\product_detail.html:31
+msgid "Model:"
+msgstr "အမျိုးအစား-"
+
+#: .\products\templates\products\product_detail.html:32
+msgid "Year:"
+msgstr "ထုတ်လုပ်သည့်နှစ်-"
+
+#: .\products\templates\products\product_detail.html:33
+msgid "Price:"
+msgstr "စျေးနှုန်း-"
+
+#: .\products\templates\products\product_detail.html:41
+msgid "Contact:"
+msgstr "ဆက်သွယ်ရန်-"
+
+#: .\products\templates\products\product_detail.html:45
+msgid "Phone:"
+msgstr "ဖုန်း-"
+
+#: .\products\templates\products\product_detail.html:49
+msgid "Telegram"
+msgstr "တယ်လီဂရမ်"
+
+#: .\products\templates\products\product_list.html:22
+msgid "Tractor"
+msgstr "လယ်ထွန်စက်"
+
+#: .\products\templates\products\product_list.html:45
+msgid "Detail"
+msgstr "အသေးစိတ်"
+
+
