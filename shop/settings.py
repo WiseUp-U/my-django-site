@@ -29,7 +29,7 @@ DEBUG = False
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF =True
-ALLOWED_HOSTS = ["my-django-site-2-zpfu.onrender.com"]
+ALLOWED_HOSTS = ["https://my-django-site-2-zpfu.onrender.com/"]
 
 
 # Application definition
@@ -130,13 +130,11 @@ LANGUAGES = (
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR , "static"),
-]
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-MEDIS_URL = "/media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
