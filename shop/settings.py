@@ -29,7 +29,7 @@ DEBUG = False
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF =True
-ALLOWED_HOSTS = ["my-django-site-2-zpfu.onrender.com/"]
+ALLOWED_HOSTS = ["my-django-site-2-zpfu.onrender.com"]
 
 
 # Application definition
