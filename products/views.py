@@ -10,3 +10,10 @@ def product_detail(request, id):
     return render(request, "products/product_detail.html", {'product' : product })
 
 
+from django.http import HttpResponse
+import os
+from django.conf import settings
+
+def check_mdeia(request):
+    files = os.listdir(settings.MEDIA_ROOT)
+    return HttpResponse(str(files))
