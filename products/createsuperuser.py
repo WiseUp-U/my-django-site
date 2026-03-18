@@ -3,7 +3,7 @@ from django.conf import settings
 
 User = get_user_model()
 
-def create_superuser():
+def create_superuser(sender, **kwargs):
     username =settings.DJANGO_SUPERUSER_USERNAME
     email = settings.DJANGO_SUPERUSER_EMAIL
     password = settings.DJANGO_SUPERUSER_PASSWORD
@@ -11,7 +11,7 @@ def create_superuser():
     if not username or not password:
         return
 
-    if not User.objects.filter(username=settings.DJANGO_SUPERUSER_USERNAME).exists():
+    if not User.objects.filter(username=username).exists():
         User.objects.create_superuser(
             username=username,
             email=email,
