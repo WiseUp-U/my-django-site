@@ -15,5 +15,10 @@ import os
 from django.conf import settings
 
 def check_mdeia(request):
-    files = os.listdir(settings.MEDIA_ROOT)
-    return HttpResponse(str(files))
+    result = []
+
+    for root, dirs, files in os.walk(settings.MEIDA_ROOT):
+        for name in files:
+            result.append(os.path.join(root, name))
+
+    return HttpResponse(str(result))
