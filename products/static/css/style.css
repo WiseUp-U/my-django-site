@@ -98,6 +98,7 @@ display:flex;
 align-items:center;
 height: 660px;
 scroll-behavior: smooth;
+justify-content: center;
 }
 
 .carousel-track{
@@ -286,43 +287,53 @@ transition: all 0.2s ease;
 
 @media (max-width: 768px){
 
-    .hero-section{
-        height: 90px;
+    .carousel-wrapper{
+        margin-top: 20px;
     }
 
     .carousel{
         width: 100%;
         height: auto;
+        overflow: hidden;
     }
 
     .carousel-track{
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0 !important;   /* 🔥 force remove 500px */
+        gap: 10px;
     }
 
     .carousel-card{
-        flex: 0 0 80%;
-        margin: auto;
+        flex: 0 0 100%;   /* 🔥 full width */
+        max-width: 100%;
+        margin: 0 auto;
     }
 
-    .carousel-card.active{
-        transform: scale(1.05);
+    .carousel-image-wrapper{
+        aspect-ratio: 1 / 1;
     }
 
-    .card-year{
-        font-size: 20px;
-        letter-spacing: 3px;
+    .carousel-card img{
+        object-fit: contain;
+    }
+
+    .carousel{
+    display: flex;
+    justify-content: center;
     }
 
     .arrow{
-        width: 50px;
-        height: 50px;
-        font-size: 30px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 20;
     }
 
-    .detail-btn{
-        margin-left: auto;
-        margin-right: auto;
+    .arrow.left{
+        left: 5px;
     }
 
+    .arrow.right{
+        right: 5px;
+    }
 }
+
