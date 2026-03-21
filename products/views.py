@@ -17,7 +17,7 @@ from django.conf import settings
 def check_mdeia(request):
     result = []
 
-    for root, dirs, files in os.walk(settings.MEIDA_ROOT):
+    for root, dirs, files in os.walk(settings.MEDIA_ROOT):
         for name in files:
             result.append(os.path.join(root, name))
 
