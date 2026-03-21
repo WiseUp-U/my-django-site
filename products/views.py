@@ -14,7 +14,7 @@ from django.http import HttpResponse
 import os
 from django.conf import settings
 
-def check_mdeia(request):
+def check_media(request):
     result = []
 
     for root, dirs, files in os.walk(settings.MEDIA_ROOT):
