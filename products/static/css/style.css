@@ -121,23 +121,25 @@ body{
     border-radius: 10px;
     background: rgba(0,0,0,0.6);
     color: white;
-
+    transition: transform 0.3s ease;
     overflow: hidden;
     cursor: pointer;
 }
 
-.btn-bg{
-    position: absolute;
-    inset: 0;
-    background-image: url("../images/detail.png");
-    background-size: cover;
-    opacity: 0.4;
+.detail-btn:hover{
+    transform: translateY(4px);
 }
+
 
 .btn-next{
     position: relative;
     z-index: 1;
 }
+
+.btn-next:hover{
+    color:rgb(1, 5, 119)
+}
+
 
 /* Desktop enhancement */
 @media (min-width: 768px){

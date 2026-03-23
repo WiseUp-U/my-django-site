@@ -23,7 +23,7 @@
 
 <!-- 🔥 NEW CAROUSEL -->
 <div class="carousel">
-
+    <div class="spacer"></div> <!-- start -->
     {% for product in products %}
         <div class="carousel-card">
 
@@ -43,14 +43,13 @@
 
             <a href="{% url 'product_detail' product.id %}">
                 <h3 class="detail-btn">
-                    <span class="btn-bg"></span>
                     <span class="btn-next">{% trans "Detail" %}</span>
                 </h3>
             </a>
 
         </div>
     {% endfor %}
-
+    <div class="spacer"></div> <!-- end -->
 </div>
 
 <!-- 🔥 AUTO CENTER SCRIPT -->
