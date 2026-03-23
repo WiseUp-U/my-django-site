@@ -1,13 +1,16 @@
 @font-face {
     font-family: 'Bungee';
     src: url('../fonts/Bungee-Regular.ttf');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'notosans';
-    src: url('../fonts/NotoSansMyanmar-VariableFont_wdth\,wght.ttf');
+    src: url('../fonts/NotoSansMyanmar-VariableFont_wdth,wght.ttf');
+    font-display: swap;
 }
 
+/* Language styles */
 html[lang="en"] body{
     font-family: "Bungee", sans-serif;
     letter-spacing: 3px;
@@ -15,230 +18,112 @@ html[lang="en"] body{
 
 html[lang="my"] body{
     font-family: "notosans", sans-serif;
-    letter-spacing: 0px;
+    letter-spacing: 0;
     line-height: 1.7;
 }
 
-html[lang="my"] .card-year{
-    letter-spacing: 0;
-    font-size: 25px;
-    font-weight: 500;
-}
-
-html[lang="my"] .card-name{
-    letter-spacing: 4px;
-    font-weight: 600;
-}
-
-#transition-overlay {
-    position: fixed;
-    inset: 0;
-    background:white;
-    z-index: 9999;
-    transition: opacity 0.5s ease;
-    opacity: 1;
-    pointer-events: none;
-} 
-
-#transition-overlay.hidden {
-    opacity: 0;
-}
-
+/* Body */
 body{
-
     margin: 0;
     background-image: url("../images/farm2_4.webp");
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    transform: translateY(20px);
-
 }
 
-body.page-visible{
-    transform: translateY(0);
+/* Hero */
+.hero-section{
+    height: 120px;
+    padding: 16px;
+    background-image: url("../images/headback4.webp");
+    background-size: cover;
+}
+
+/* 🔥 ANDROID STYLE CAROUSEL */
+.carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    gap: 16px;
+    padding: 20px;
+
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Cards */
+.carousel-card {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+
+    border-radius: 20px;
+
+    transform: scale(0.9);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+
+    text-align: center;
+}
+
+/* Active card */
+.carousel-card.active {
+    transform: scale(1);
     opacity: 1;
 }
 
-.hero-section{
-    height: 130px;
-    padding: 16px 0;
-    background-image: url("../images/headback4.webp");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.hero-section button{
-    background-color: rgba(240, 248, 255, 0.03);
-    color: #ffffff;
-}
-
-
-.carousel-wrapper{
-display:flex;
-align-items:center;
-justify-content:center;
-
-margin-top: 50px;
-max-width:1900px;
-
-
-
-border-radius:25px;
-}
-
-.carousel{
-width:1500px;   /* 3 × 250px */
-overflow:hidden;
-margin:auto;
-display:flex;
-align-items:center;
-height: 660px;
-scroll-behavior: smooth;
-}
-
-.carousel-track{
-display:flex;
-transition:transform 0.6s ease-in-out;
-gap:20px;
-padding-left: 500px;
-padding-right: 500px;
-}
-
-
-.carousel-card{
-flex: 0 0 500px;
-height:100%;
-text-align:center;
-opacity:0%;
-transform:scale(0.85);
-transition:all 0.4s ease;
-filter:blur(2px);
-position:relative;
-margin-top: 30px;
-}
-
-
-.card-name{  
-    background-position: right;
-    text-align: center;
-    justify-content: center;
-    background-image: url('../images/titlecard2.png');
-    color: rgb(11, 38, 62);
-    font-size: large;
-    font-weight: 100;
+/* Image */
+.carousel-image-wrapper{
+    aspect-ratio: 1/1;
     overflow: hidden;
-    letter-spacing: 0;
+    border-radius: 20px;
+}
 
+.carousel-card img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Card text */
+.card-name{
+    margin-bottom: 10px;
 }
 
 .card-info{
     display: flex;
-   
-    
+    align-items: center;
+    justify-content: center;
 }
-
 
 .card-year{
-    justify-content: center;
-    text-align: center;
     writing-mode: vertical-rl;
-    display: inline-block;
-    font-size: 32px;
-    font-family: 'Bungee';
-    color: rgb(98, 79, 5);
-    text-orientation: upright;
-    letter-spacing: 10px;
-    height: 200px;
-    font-weight: 300;
-    display: flex;
+    font-size: 24px;
+    margin-left: 10px;
 }
 
-.carousel-card img{
-width:100%;
-border-radius:20%;
-display: block;
-height: 100%;
-object-fit: contain;
-
-}
-
-.carousel-image-wrapper{
-    border-radius: 20%;
-    padding: 3px;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-}
-
-.carousel-card.active{
-opacity:1;
-transform:scale(1.1) translateY(-15px);
-filter:blur(0);
-z-index: 10;
-}
-
-.carousel-card.active::after{
-    content: "";
-    position: absolute;
-
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 70%;
-    height: 20px;
-
-    background: radial-gradient(
-        ellipse at center,
-        rgba(0,0,0,0.35) 0%,
-        rgba(0,0,0,0.1) 60%,
-        transparent 100%
-        );
-
-    filter: blur(4px);
-}
-
+/* Button */
 .detail-btn{
     position: relative;
-    width: 160px;
-    height: 50px;
-    border: none;
+    width: 140px;
+    height: 45px;
+    margin: 20px auto;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
+    border-radius: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+
     overflow: hidden;
-    margin-left: 150px;
-    background: rgba(0, 0, 0, 0.693);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border:1px solid rgba(7, 7, 7, 0.3);
-    border-radius: 12px;
-    transition: transform 0.4s ease;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     cursor: pointer;
-    transform: translateY(0);
-}
-
-.carousel-card a:-webkit-any-link{
-    color: #262c2c;
-}
-
-.detail-btn:hover{
-    box-shadow: 0 4px 20px rgba(0, 83, 248, 0.7);
-    transform: translateY(-4px);
-    
-}
-
-.detail-btn:hover .btn-next{
-    color:#184afd;
-    transform: translateY(-4px);
-}
-
-.detail-btn:hover .btn-bg{
-    transform: translateY(-4px);
 }
 
 .btn-bg{
@@ -246,83 +131,17 @@ z-index: 10;
     inset: 0;
     background-image: url("../images/detail.png");
     background-size: cover;
-    background-position: center;
-    z-index: 0;
-    margin-right: 8px;
-    transition: transform 0.4s ease;
+    opacity: 0.4;
 }
 
 .btn-next{
     position: relative;
     z-index: 1;
-    color: rgb(240, 240, 240);
-    font-weight: 200;
-    font-family: 'Bungee';
-    font-size: 15px;
-    transition: transform 0.4s ease;
-    padding-top: 5px;
 }
 
-.arrow{
-font-size:50px;
-cursor:pointer;
-color:white;
-width: 70px;
-height: 70px;
-align-items: center;
-border-radius: 999px;
-background: rgba(255, 255, 255, 0.15);
-backdrop-filter: blur(10px);
-text-decoration: none;
-border: 1px solid rgba(255,255,255,0.25);
-transition: all 0.2s ease;
-
-}
-
-.arrow:hover {
-    background: rgba(255,255,255,0.25);
-    transform: translateX(-2px);
-}
-
-@media (max-width: 768px){
-
-    .hero-section{
-        height: 90px;
-    }
-
-    .carousel{
-        width: 100%;
-        height: auto;
-    }
-
-    .carousel-track{
-        padding-left: 0;
-        padding-right: 0;
-    }
-
+/* Desktop enhancement */
+@media (min-width: 768px){
     .carousel-card{
-        flex: 0 0 80%;
-        margin: auto;
+        flex: 0 0 400px;
     }
-
-    .carousel-card.active{
-        transform: scale(1.05);
-    }
-
-    .card-year{
-        font-size: 20px;
-        letter-spacing: 3px;
-    }
-
-    .arrow{
-        width: 50px;
-        height: 50px;
-        font-size: 30px;
-    }
-
-    .detail-btn{
-        margin-left: auto;
-        margin-right: auto;
-    }
-
 }
