@@ -1,162 +1,115 @@
+<!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 {% load static %}
 {% load i18n %}
 <head>
-    <link rel="prefetch" href="nextpage.html">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- preload font -->
     <link rel="preload" href="{% static 'fonts/Bungee-Regular.ttf' %}" as="font" type="font/ttf" crossorigin>
 </head>
 
-
 <body>
 
-<div id="transition-overlay"></div>
 <div class="hero-section">
     <form action="/i18n/setlang/" method="post">
-    {% csrf_token %}
-    <button name="language" value="en">English</button>
-    <button name="language" value="my">မြန်မာ</button>
-</form>
-
+        {% csrf_token %}
+        <button name="language" value="en">English</button>
+        <button name="language" value="my">မြန်မာ</button>
+    </form>
 </div>
 
+<!-- 🔥 NEW CAROUSEL -->
+<div class="carousel">
 
-<div class="carousel-wrapper">
+    {% for product in products %}
+        <div class="carousel-card">
 
-    <button class="arrow left" onclick="prevSlide()">❮</button>
+            <div class="card-name">{{ product.name }}</div>
 
-    <div class="carousel">
-        <div class="carousel-track">
-            {% for product in products %}
-                <div class="carousel-card">
-                    <div class="card-name">{{ product.name }}</div>
-                    <div class="card-info">
-                        <div class="carousel-image-wrapper">
-                            <img src="{{ product.image.url }}" loading="lazy">
-                        </div>
-                        <div class="card-year">{{ product.year }} </div>
-                    </div>
-                    <a href="{% url 'product_detail' product.id %}">
-                        <h3 class="detail-btn">
-                            <span class="btn-bg"></span>
-                        <span class="btn-next">{% trans "Detail" %}</span>
-                        </h3>
-                    </a>
+            <div class="card-info">
+                <div class="carousel-image-wrapper">
+                    <img 
+                        src="{{ product.image.url }}" 
+                        loading="lazy"
+                        width="300"
+                        height="300"
+                    >
                 </div>
-            {% endfor %}
+                <div class="card-year">{{ product.year }}</div>
+            </div>
+
+            <a href="{% url 'product_detail' product.id %}">
+                <h3 class="detail-btn">
+                    <span class="btn-bg"></span>
+                    <span class="btn-next">{% trans "Detail" %}</span>
+                </h3>
+            </a>
+
         </div>
-
-    </div>
-
-    <button class="arrow right" onclick="nextSlide()">❯</button>
-
+    {% endfor %}
 
 </div>
 
+<!-- 🔥 AUTO CENTER SCRIPT -->
 <script>
+const carousel = document.querySelector(".carousel");
+const cards = document.querySelectorAll(".carousel-card");
 
+function updateActiveCard() {
+    let center = carousel.scrollLeft + carousel.offsetWidth / 2;
 
-const track = document.querySelector(".carousel-track")
-const cards = document.querySelectorAll(".carousel-card")
-function getCardWidth(){
-    const style = window.getComputedStyle(track)
-    const gap = parseInt(style.gap) || 0
-    return cards[0].offsetWidth + gap
-}
-let current = 0
+    let closestCard = null;
+    let closestDistance = Infinity;
 
-function updateCarousel(){
-    const cardWidth = getCardWidth()
-    track.style.transform = `translateX(-${current*cardWidth}px)`
+    cards.forEach(card => {
+        let cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        let distance = Math.abs(center - cardCenter);
 
-
-cards.forEach(card => card.classList.remove("active"));
-
-cards[current].classList.add("active")
-
-
-}
-
-function nextSlide(){
-
-if(current < cards.length-1){
-    current++
-}else{
-    current = 0
-}
-
-updateCarousel()
-}
-
-function prevSlide(){
-
-if(current > 0){
-    current--
-}else{
-    current = cards.length-1
-}
-updateCarousel()
-
-}
-
-updateCarousel()
-
-</script>
-
-<script>
-
-let startX = 0
-
-track.addEventListener("touchstart", e=>{
-startX = e.touches[0].clientX
-})
-
-track.addEventListener("touchend", e=>{
-let endX = e.changedTouches[0].clientX
-
-if(startX - endX > 50){
-nextSlide()
-}
-
-if(endX - startX > 50){
-prevSlide()
-}
-
-})
-
-</script>
-
-  <script>
-    const overlay = document.getElementById("transition-overlay");
-
-    window.addEventListener("pageshow", () =>{
-        document.body.classList.add("page-visible");
-
-        setTimeout(()=>{
-            overlay.classList.add("hidden");
-        },200);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestCard = card;
+        }
     });
 
-    document.querySelectorAll('a[href]').forEach(link => {
-        if(link.hostname !== window.location.hostname) return;
-        if(link.getAttribute("href").startsWith("#")) return;
+    cards.forEach(card => card.classList.remove("active"));
+    if (closestCard) closestCard.classList.add("active");
+}
 
-        link.addEventListener('click', e => {
-            e.preventDefault();
-            const url = link.href;
+function snapToCenter() {
+    const active = document.querySelector(".carousel-card.active");
+    if (!active) return;
 
-            overlay.classList.remove("hidden");
-            document.body.classList.remove("page-visible");
+    const left = active.offsetLeft;
+    const width = active.offsetWidth;
 
-            setTimeout(() => {
-                window.location = url;
-            }, 500);
-        });
+    const scrollTo = left - (carousel.offsetWidth / 2) + (width / 2);
+
+    carousel.scrollTo({
+        left: scrollTo,
+        behavior: "smooth"
     });
+}
 
-    </script>
+let scrollTimeout;
+
+carousel.addEventListener("scroll", () => {
+    updateActiveCard();
+
+    clearTimeout(scrollTimeout);
+
+    scrollTimeout = setTimeout(() => {
+        snapToCenter();
+    }, 100);
+});
+
+window.addEventListener("load", () => {
+    updateActiveCard();
+    snapToCenter();
+});
+</script>
 
 </body>
-
 </html>
