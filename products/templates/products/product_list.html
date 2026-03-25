@@ -4,109 +4,165 @@
 {% load i18n %}
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <!-- preload font -->
-    <link rel="preload" href="{% static 'fonts/Bungee-Regular.ttf' %}" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=10">
 </head>
 
 <body>
 
-<div class="hero-section">
-    <form action="/i18n/setlang/" method="post">
-        {% csrf_token %}
-        <button name="language" value="en">English</button>
-        <button name="language" value="my">မြန်မာ</button>
-    </form>
-</div>
+<!-- 🔥 Page transition -->
+<div id="transition-overlay"></div>
 
-<!-- 🔥 NEW CAROUSEL -->
-<div class="carousel">
-    <div class="spacer"></div> <!-- start -->
-    {% for product in products %}
-        <div class="carousel-card">
+<div class="hero">
 
-            <div class="card-name">{{ product.name }}</div>
+    <div class="hero-overlay"></div>
+    <div class="dust-container"></div>
 
-            <div class="card-info">
-                <div class="carousel-image-wrapper">
-                    <img 
-                        src="{{ product.image.url }}" 
-                        loading="lazy"
-                        width="300"
-                        height="300"
-                    >
+    <div class="hero-content">
+
+        <!-- Language -->
+        <form action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+            <button name="language" value="en">EN</button>
+            <button name="language" value="my">မြန်မာ</button>
+        </form>
+
+        <!-- Carousel -->
+        <div class="carousel">
+
+            {% for product in products %}
+            <div class="carousel-card">
+
+                <div class="card-name">{{ product.name }}</div>
+
+                <div class="card-info">
+                    <div class="carousel-image-wrapper">
+                        <img src="{{ product.image.url }}" loading="lazy">
+                    </div>
+                    <div class="card-year">{{ product.year }}</div>
                 </div>
-                <div class="card-year">{{ product.year }}</div>
-            </div>
 
-            <a href="{% url 'product_detail' product.id %}">
-                <h3 class="detail-btn">
-                    <span class="btn-next">{% trans "Detail" %}</span>
-                </h3>
-            </a>
+                <a href="{% url 'product_detail' product.id %}">
+                    <div class="detail-btn">
+                        <span class="btn-next">{% trans "Detail" %}</span>
+                    </div>
+                </a>
+
+            </div>
+            {% endfor %}
 
         </div>
-    {% endfor %}
-    <div class="spacer"></div> <!-- end -->
+
+    </div>
 </div>
 
-<!-- 🔥 AUTO CENTER SCRIPT -->
 <script>
-const carousel = document.querySelector(".carousel");
-const cards = document.querySelectorAll(".carousel-card");
+document.addEventListener("DOMContentLoaded", () => {
 
-function updateActiveCard() {
-    let center = carousel.scrollLeft + carousel.offsetWidth / 2;
+    const carousel = document.querySelector(".carousel");
+    const cards = document.querySelectorAll(".carousel-card");
 
-    let closestCard = null;
-    let closestDistance = Infinity;
+    function updateActiveCard() {
+        let center = carousel.scrollLeft + carousel.offsetWidth / 2;
 
-    cards.forEach(card => {
-        let cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        let distance = Math.abs(center - cardCenter);
+        let closestCard = null;
+        let closestDistance = Infinity;
 
-        if (distance < closestDistance) {
-            closestDistance = distance;
-            closestCard = card;
+        cards.forEach(card => {
+            let cardCenter = card.offsetLeft + card.offsetWidth / 2;
+            let distance = Math.abs(center - cardCenter);
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestCard = card;
+            }
+        });
+
+        cards.forEach(card => card.classList.remove("active"));
+        if (closestCard) closestCard.classList.add("active");
+    }
+
+    function snapToCenter() {
+        const active = document.querySelector(".carousel-card.active");
+        if (!active) return;
+
+        const scrollTo = active.offsetLeft - (carousel.offsetWidth / 2) + (active.offsetWidth / 2);
+
+        carousel.scrollTo({
+            left: scrollTo,
+            behavior: "smooth"
+        });
+    }
+
+    let scrollTimeout;
+
+    carousel.addEventListener("scroll", () => {
+        updateActiveCard();
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(snapToCenter, 100);
+    });
+
+    updateActiveCard();
+    snapToCenter();
+
+    /* 🌾 Dust particles */
+    const dustContainer = document.querySelector(".dust-container");
+
+    function createDust(x, y) {
+        const dust = document.createElement("div");
+        dust.classList.add("dust");
+
+        const offsetX = (Math.random() - 0.5) * 60;
+
+        dust.style.left = x + "px";
+        dust.style.top = y + "px";
+        dust.style.setProperty("--x", offsetX + "px");
+
+        dustContainer.appendChild(dust);
+
+        setTimeout(() => dust.remove(), 1200);
+    }
+
+    let isScrolling = false;
+
+    carousel.addEventListener("scroll", () => {
+        if (!isScrolling) {
+            isScrolling = true;
+
+            for (let i = 0; i < 5; i++) {
+                const x = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
+                const y = window.innerHeight * 0.75;
+
+                createDust(x, y);
+            }
+
+            setTimeout(() => isScrolling = false, 150);
         }
     });
 
-    cards.forEach(card => card.classList.remove("active"));
-    if (closestCard) closestCard.classList.add("active");
-}
+    /* 🔥 Page transition */
+    const overlay = document.getElementById("transition-overlay");
 
-function snapToCenter() {
-    const active = document.querySelector(".carousel-card.active");
-    if (!active) return;
-
-    const left = active.offsetLeft;
-    const width = active.offsetWidth;
-
-    const scrollTo = left - (carousel.offsetWidth / 2) + (width / 2);
-
-    carousel.scrollTo({
-        left: scrollTo,
-        behavior: "smooth"
+    window.addEventListener("pageshow", () => {
+        document.body.classList.add("page-visible");
+        setTimeout(() => overlay.classList.add("hidden"), 100);
     });
-}
 
-let scrollTimeout;
+    document.querySelectorAll("a[href]").forEach(link => {
+        if (link.hostname !== window.location.hostname) return;
 
-carousel.addEventListener("scroll", () => {
-    updateActiveCard();
+        link.addEventListener("click", e => {
+            e.preventDefault();
 
-    clearTimeout(scrollTimeout);
+            overlay.classList.remove("hidden");
+            document.body.classList.remove("page-visible");
 
-    scrollTimeout = setTimeout(() => {
-        snapToCenter();
-    }, 100);
-});
+            setTimeout(() => {
+                window.location.href = link.href;
+            }, 400);
+        });
+    });
 
-window.addEventListener("load", () => {
-    updateActiveCard();
-    snapToCenter();
 });
 </script>
 
