@@ -4,41 +4,36 @@
     font-display: swap;
 }
 
-@font-face {
-    font-family: 'notosans';
-    src: url('../fonts/NotoSansMyanmar-VariableFont_wdth,wght.ttf');
-    font-display: swap;
-}
-
-/* Language styles */
-html[lang="en"] body{
-    font-family: "Bungee", sans-serif;
-    letter-spacing: 3px;
-}
-
-html[lang="my"] body{
-    font-family: "notosans", sans-serif;
-    letter-spacing: 0;
-    line-height: 1.7;
-}
-
-/* Body */
-body{
+body {
     margin: 0;
-    background-image: url("../images/farm2_4.webp");
-    background-size: cover;
-    background-position: center;
+    font-family: 'Bungee', sans-serif;
 }
 
-/* Hero */
-.hero-section{
-    height: 120px;
-    padding: 16px;
-    background-image: url("../images/headback4.webp");
-    background-size: cover;
+/* 🌄 HERO */
+.hero {
+    position: relative;
+    min-height: 100vh;
+
+    background: url("../images/farm2_4.webp") center/cover no-repeat;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 🔥 ANDROID STYLE CAROUSEL */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+/* 🚀 CAROUSEL */
 .carousel {
     display: flex;
     overflow-x: auto;
@@ -52,101 +47,138 @@ body{
 
     scrollbar-width: none;
 }
+.carousel::-webkit-scrollbar { display: none; }
 
-.spacer {
-    flex: 0 0 50%; /* half of carousel width */
-}
-
-.carousel::-webkit-scrollbar {
-    display: none;
-}
-
-/* Cards */
+/* 🚜 CARD */
 .carousel-card {
     flex: 0 0 85%;
     scroll-snap-align: center;
 
     border-radius: 20px;
+    padding: 16px;
+
+    background: linear-gradient(145deg, #2a2a2a, #111);
+
+    color: white;
 
     transform: scale(0.9);
-    opacity: 0.6;
+    opacity: 0.7;
     transition: all 0.3s ease;
 
-    text-align: center;
+    position: relative;
 }
 
-/* Active card */
 .carousel-card.active {
-    transform: scale(1);
+    transform: scale(1) translateY(-10px);
     opacity: 1;
 }
 
-/* Image */
-.carousel-image-wrapper{
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    border-radius: 20px;
+/* 🌑 SHADOW */
+.carousel-card::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 25px;
+    background: radial-gradient(circle, rgba(0,0,0,0.5), transparent);
+    filter: blur(6px);
 }
 
-.carousel-card img{
+/* 🏷 NAME */
+.card-name {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #a44c2c;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+/* ⚙️ YEAR */
+.card-year {
+    writing-mode: vertical-rl;
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+/* IMAGE */
+.carousel-image-wrapper {
+    aspect-ratio: 1/1;
+}
+.carousel-card img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-/* Card text */
-.card-name{
-    margin-bottom: 10px;
-}
-
-.card-info{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-year{
-    writing-mode: vertical-rl;
-    font-size: 24px;
-    margin-left: 10px;
-    text-orientation: upright;
-}
-
-/* Button */
-.detail-btn{
-    position: relative;
-    width: 140px;
-    height: 45px;
+/* 🔘 BUTTON */
+.detail-btn {
     margin: 20px auto;
+    width: 150px;
+    height: 45px;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
+    background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
     border-radius: 10px;
-    background: rgba(0,0,0,0.6);
-    color: white;
 
-    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+
+    color: white;
     cursor: pointer;
+    transition: 0.2s;
 }
 
-.btn-bg{
+.detail-btn:hover {
+    transform: translateY(-3px);
+}
+
+/* 🌾 DUST */
+.dust-container {
     position: absolute;
     inset: 0;
-    background-image: url("../images/detail.png");
-    background-size: cover;
-    opacity: 0.4;
+    pointer-events: none;
 }
 
-.btn-next{
-    position: relative;
-    z-index: 1;
+.dust {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #d4a373;
+    border-radius: 50%;
+    animation: dustMove 1.2s forwards;
 }
 
-/* Desktop enhancement */
-@media (min-width: 768px){
-    .carousel-card{
-        flex: 0 0 400px;
+@keyframes dustMove {
+    to {
+        transform: translateY(-40px);
+        opacity: 0;
     }
+}
+
+/* 🔥 PAGE TRANSITION */
+#transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 9999;
+    transition: 0.5s;
+}
+
+#transition-overlay.hidden {
+    opacity: 0;
+}
+
+body {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.5s;
+}
+
+body.page-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
