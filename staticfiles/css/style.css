@@ -1,12 +1,6 @@
-@font-face {
-    font-family: 'Bungee';
-    src: url('../fonts/Bungee-Regular.ttf');
-    font-display: swap;
-}
-
 body {
     margin: 0;
-    font-family: 'Bungee', sans-serif;
+    font-family: sans-serif;
 }
 
 /* 🌄 HERO */
@@ -14,11 +8,16 @@ body {
     position: relative;
     min-height: 100vh;
 
-    background: url("../images/farm2_4.webp") center/cover no-repeat;
+    background: url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover no-repeat;
 
     display: flex;
     align-items: center;
-    justify-content: center;
+}
+
+/* 🔥 FIX: overlays don't block */
+.hero-overlay,
+.dust-container {
+    pointer-events: none;
 }
 
 .hero-overlay {
@@ -37,13 +36,14 @@ body {
 .carousel {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
 
     gap: 16px;
     padding: 20px;
 
+    scroll-snap-type: x mandatory;
+
     -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+    touch-action: pan-x;
 
     scrollbar-width: none;
 }
@@ -54,18 +54,19 @@ body {
     flex: 0 0 85%;
     scroll-snap-align: center;
 
+    background: linear-gradient(145deg,#2a2a2a,#111);
     border-radius: 20px;
     padding: 16px;
-
-    background: linear-gradient(145deg, #2a2a2a, #111);
 
     color: white;
 
     transform: scale(0.9);
-    opacity: 0.7;
-    transition: all 0.3s ease;
+    opacity: 0.6;
+    transition: 0.3s;
 
     position: relative;
+
+    user-select: none;
 }
 
 .carousel-card.active {
@@ -75,110 +76,88 @@ body {
 
 /* 🌑 SHADOW */
 .carousel-card::after {
-    content: "";
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 25px;
+    content:"";
+    position:absolute;
+    bottom:5px;
+    left:50%;
+    transform:translateX(-50%);
+    width:60%;
+    height:20px;
     background: radial-gradient(circle, rgba(0,0,0,0.5), transparent);
     filter: blur(6px);
 }
 
-/* 🏷 NAME */
+/* 🏷 */
 .card-name {
-    display: inline-block;
-    padding: 6px 12px;
-    background: #a44c2c;
-    border-radius: 6px;
-    margin-bottom: 10px;
+    background:#a44c2c;
+    padding:6px 12px;
+    border-radius:6px;
 }
 
-/* ⚙️ YEAR */
+/* ⚙️ */
 .card-year {
     writing-mode: vertical-rl;
-    font-size: 20px;
-    margin-left: 10px;
+    margin-left:10px;
 }
 
 /* IMAGE */
 .carousel-image-wrapper {
-    aspect-ratio: 1/1;
+    aspect-ratio:1/1;
 }
-.carousel-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+.carousel img {
+    width:100%;
 }
 
 /* 🔘 BUTTON */
 .detail-btn {
-    margin: 20px auto;
-    width: 150px;
-    height: 45px;
+    margin:20px auto;
+    width:140px;
+    height:45px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
-    border-radius: 10px;
+    background:#333;
+    border-radius:10px;
 
-    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
-
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.detail-btn:hover {
-    transform: translateY(-3px);
+    cursor:pointer;
 }
 
 /* 🌾 DUST */
 .dust-container {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+    position:absolute;
+    inset:0;
 }
 
 .dust {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #d4a373;
-    border-radius: 50%;
-    animation: dustMove 1.2s forwards;
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:#d4a373;
+    border-radius:50%;
+    animation:dust 1s forwards;
 }
 
-@keyframes dustMove {
+@keyframes dust {
     to {
         transform: translateY(-40px);
-        opacity: 0;
+        opacity:0;
     }
 }
 
-/* 🔥 PAGE TRANSITION */
+/* 🔥 TRANSITION (SAFE) */
 #transition-overlay {
-    position: fixed;
-    inset: 0;
-    background: white;
-    z-index: 9999;
-    transition: 0.5s;
+    position:fixed;
+    inset:0;
+    background:white;
+    z-index:9999;
+
+    pointer-events:none;
+    transition:0.5s;
 }
 
 #transition-overlay.hidden {
-    opacity: 0;
-}
-
-body {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: 0.5s;
-}
-
-body.page-visible {
-    opacity: 1;
-    transform: translateY(0);
+    opacity:0;
+    visibility:hidden;
 }
