@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ request.LANGUAGE_CODE }}">
-{% load static %}
-{% load i18n %}
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=10">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tractor UI</title>
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 
 <body>
 
-<!-- 🔥 Page transition -->
+<!-- 🔥 SAFE TRANSITION OVERLAY -->
 <div id="transition-overlay"></div>
 
 <div class="hero">
@@ -19,36 +18,42 @@
 
     <div class="hero-content">
 
-        <!-- Language -->
-        <form action="/i18n/setlang/" method="post">
-            {% csrf_token %}
-            <button name="language" value="en">EN</button>
-            <button name="language" value="my">မြန်မာ</button>
-        </form>
-
-        <!-- Carousel -->
         <div class="carousel">
 
-            {% for product in products %}
+            <!-- CARD -->
             <div class="carousel-card">
-
-                <div class="card-name">{{ product.name }}</div>
+                <div class="card-name">TRACTOR X</div>
 
                 <div class="card-info">
                     <div class="carousel-image-wrapper">
-                        <img src="{{ product.image.url }}" loading="lazy">
+                        <img src="https://via.placeholder.com/300">
                     </div>
-                    <div class="card-year">{{ product.year }}</div>
+                    <div class="card-year">2024</div>
                 </div>
 
-                <a href="{% url 'product_detail' product.id %}">
+                <a href="#">
                     <div class="detail-btn">
-                        <span class="btn-next">{% trans "Detail" %}</span>
+                        <span>DETAIL</span>
                     </div>
                 </a>
-
             </div>
-            {% endfor %}
+
+            <div class="carousel-card">
+                <div class="card-name">TRACTOR Z</div>
+
+                <div class="card-info">
+                    <div class="carousel-image-wrapper">
+                        <img src="https://via.placeholder.com/300">
+                    </div>
+                    <div class="card-year">2023</div>
+                </div>
+
+                <a href="#">
+                    <div class="detail-btn">
+                        <span>DETAIL</span>
+                    </div>
+                </a>
+            </div>
 
         </div>
 
@@ -58,110 +63,111 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    const carousel = document.querySelector(".carousel");
-    const cards = document.querySelectorAll(".carousel-card");
+const carousel = document.querySelector(".carousel");
+const cards = document.querySelectorAll(".carousel-card");
 
-    function updateActiveCard() {
-        let center = carousel.scrollLeft + carousel.offsetWidth / 2;
+/* 🎯 ACTIVE CARD */
+function updateActiveCard() {
+    let center = carousel.scrollLeft + carousel.offsetWidth / 2;
 
-        let closestCard = null;
-        let closestDistance = Infinity;
+    let closest = null;
+    let min = Infinity;
 
-        cards.forEach(card => {
-            let cardCenter = card.offsetLeft + card.offsetWidth / 2;
-            let distance = Math.abs(center - cardCenter);
+    cards.forEach(card => {
+        let cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        let dist = Math.abs(center - cardCenter);
 
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestCard = card;
-            }
-        });
-
-        cards.forEach(card => card.classList.remove("active"));
-        if (closestCard) closestCard.classList.add("active");
-    }
-
-    function snapToCenter() {
-        const active = document.querySelector(".carousel-card.active");
-        if (!active) return;
-
-        const scrollTo = active.offsetLeft - (carousel.offsetWidth / 2) + (active.offsetWidth / 2);
-
-        carousel.scrollTo({
-            left: scrollTo,
-            behavior: "smooth"
-        });
-    }
-
-    let scrollTimeout;
-
-    carousel.addEventListener("scroll", () => {
-        updateActiveCard();
-
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(snapToCenter, 100);
-    });
-
-    updateActiveCard();
-    snapToCenter();
-
-    /* 🌾 Dust particles */
-    const dustContainer = document.querySelector(".dust-container");
-
-    function createDust(x, y) {
-        const dust = document.createElement("div");
-        dust.classList.add("dust");
-
-        const offsetX = (Math.random() - 0.5) * 60;
-
-        dust.style.left = x + "px";
-        dust.style.top = y + "px";
-        dust.style.setProperty("--x", offsetX + "px");
-
-        dustContainer.appendChild(dust);
-
-        setTimeout(() => dust.remove(), 1200);
-    }
-
-    let isScrolling = false;
-
-    carousel.addEventListener("scroll", () => {
-        if (!isScrolling) {
-            isScrolling = true;
-
-            for (let i = 0; i < 5; i++) {
-                const x = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
-                const y = window.innerHeight * 0.75;
-
-                createDust(x, y);
-            }
-
-            setTimeout(() => isScrolling = false, 150);
+        if (dist < min) {
+            min = dist;
+            closest = card;
         }
     });
 
-    /* 🔥 Page transition */
-    const overlay = document.getElementById("transition-overlay");
+    cards.forEach(c => c.classList.remove("active"));
+    if (closest) closest.classList.add("active");
+}
 
-    window.addEventListener("pageshow", () => {
-        document.body.classList.add("page-visible");
-        setTimeout(() => overlay.classList.add("hidden"), 100);
-    });
+/* 🎯 SNAP */
+function snapToCenter() {
+    const active = document.querySelector(".carousel-card.active");
+    if (!active) return;
 
-    document.querySelectorAll("a[href]").forEach(link => {
-        if (link.hostname !== window.location.hostname) return;
+    const left = active.offsetLeft - (carousel.offsetWidth / 2) + (active.offsetWidth / 2);
 
-        link.addEventListener("click", e => {
-            e.preventDefault();
+    carousel.scrollTo({ left, behavior: "smooth" });
+}
 
-            overlay.classList.remove("hidden");
-            document.body.classList.remove("page-visible");
+let timeout;
 
-            setTimeout(() => {
-                window.location.href = link.href;
-            }, 400);
-        });
-    });
+carousel.addEventListener("scroll", () => {
+    updateActiveCard();
+
+    clearTimeout(timeout);
+    timeout = setTimeout(snapToCenter, 100);
+});
+
+/* 🖱 DESKTOP DRAG */
+let isDown = false;
+let startX;
+let scrollLeft;
+
+carousel.addEventListener("mousedown", e => {
+    isDown = true;
+    startX = e.pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
+});
+
+carousel.addEventListener("mouseleave", () => isDown = false);
+carousel.addEventListener("mouseup", () => isDown = false);
+
+carousel.addEventListener("mousemove", e => {
+    if (!isDown) return;
+    e.preventDefault();
+
+    const x = e.pageX - carousel.offsetLeft;
+    const walk = (x - startX) * 2;
+
+    carousel.scrollLeft = scrollLeft - walk;
+});
+
+/* 🌾 DUST */
+const dustContainer = document.querySelector(".dust-container");
+
+function createDust(x, y) {
+    const d = document.createElement("div");
+    d.className = "dust";
+
+    d.style.left = x + "px";
+    d.style.top = y + "px";
+
+    dustContainer.appendChild(d);
+
+    setTimeout(() => d.remove(), 1000);
+}
+
+let scrolling = false;
+
+carousel.addEventListener("scroll", () => {
+    if (!scrolling) {
+        scrolling = true;
+
+        for (let i = 0; i < 4; i++) {
+            createDust(
+                window.innerWidth/2 + (Math.random()-0.5)*200,
+                window.innerHeight*0.75
+            );
+        }
+
+        setTimeout(() => scrolling = false, 120);
+    }
+});
+
+/* 🔥 SAFE TRANSITION */
+const overlay = document.getElementById("transition-overlay");
+
+window.addEventListener("load", () => {
+    overlay.classList.add("hidden");
+});
 
 });
 </script>
