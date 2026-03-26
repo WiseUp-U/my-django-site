@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ request.LANGUAGE_CODE }}">
+{% load static %}
+{% load i18n %}
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tractor UI</title>
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
