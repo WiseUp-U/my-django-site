@@ -19,43 +19,34 @@
     <div class="dust-container"></div>
 
     <div class="hero-content">
+         <!-- Language -->
+        <form action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+            <button name="language" value="en">EN</button>
+            <button name="language" value="my">မြန်မာ</button>
+        </form>
 
         <div class="carousel">
 
             <!-- CARD -->
+            {% for product in products %}
             <div class="carousel-card">
-                <div class="card-name">TRACTOR X</div>
+                <div class="card-name">{{ product.name }}</div>
 
                 <div class="card-info">
                     <div class="carousel-image-wrapper">
-                        <img src="https://via.placeholder.com/300">
+                        <img src="{{ product.image.url }}" loading="lazy">
                     </div>
-                    <div class="card-year">2024</div>
+                    <div class="card-year">{{ product.year }}</div>
                 </div>
 
-                <a href="#">
+                <a href="{% url 'product_detail' product.id %}">
                     <div class="detail-btn">
-                        <span>DETAIL</span>
+                        <span class="btn-next">{% trans "Detail" %}</span>
                     </div>
                 </a>
             </div>
-
-            <div class="carousel-card">
-                <div class="card-name">TRACTOR Z</div>
-
-                <div class="card-info">
-                    <div class="carousel-image-wrapper">
-                        <img src="https://via.placeholder.com/300">
-                    </div>
-                    <div class="card-year">2023</div>
-                </div>
-
-                <a href="#">
-                    <div class="detail-btn">
-                        <span>DETAIL</span>
-                    </div>
-                </a>
-            </div>
+            {% endfor %}
 
         </div>
 
