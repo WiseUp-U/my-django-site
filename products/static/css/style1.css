@@ -9,40 +9,47 @@
 }
 
 /* LANGUAGE */
-html[lang="en"] body{
+html[lang="en"] body {
     font-family: "Bungee", sans-serif;
     letter-spacing: 3px;
 }
 
-html[lang="my"] body{
+html[lang="my"] body {
     font-family: "notosans", sans-serif;
     letter-spacing: 0;
     line-height: 1.7;
 }
 
-/* 🔥 BACKGROUND */
+/* 🔥 BASE BODY (SAFE ANIMATION) */
 body {
     margin: 0;
     background: url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover no-repeat;
     position: relative;
 
-    transform: translateY(40px) scale(0.98);
     opacity: 0;
+    transform: translateY(40px) scale(0.98);
     transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
+/* visible state */
 body.page-visible {
-    transform: translateY(0) scale(1);
     opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
-/* DARK OVERLAY */
+/* DARK OVERLAY (FIXED LAYERING) */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.55);
-    z-index: -1;
+    z-index: 0;
+}
+
+/* ensure content is above overlay */
+body > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* 🔥 TRANSITION OVERLAY */
@@ -53,11 +60,12 @@ body::before {
     z-index: 9999;
     opacity: 1;
     transition: opacity 0.5s ease;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
 #transition-overlay.hidden {
     opacity: 0;
+    pointer-events: none;
 }
 
 /* 🌾 GROUND LINE */
@@ -70,20 +78,20 @@ body::before {
 }
 
 /* HEADER */
-.header{
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px;
 }
 
-.home{
+.home {
     text-decoration: none;
     color: white;
     font-size: 32px;
 }
 
-.back-button{
+.back-button {
     padding: 8px 14px;
     border-radius: 999px;
     background: rgba(0,0,0,0.4);
@@ -93,7 +101,7 @@ body::before {
 }
 
 /* 🖼 IMAGE GRID */
-.main{
+.main {
     display: grid;
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr 1fr;
@@ -104,7 +112,12 @@ body::before {
     overflow: hidden;
 }
 
-.product-image{
+/* FIXED GRID SPAN */
+.product-image:first-child {
+    grid-row: 1 / 3;
+}
+
+.product-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -112,62 +125,59 @@ body::before {
     transition: transform 0.3s ease;
 }
 
-.product-image:hover{
+.product-image:hover {
     transform: scale(1.03);
 }
 
-.product-image:first-child{
-    grid-row: 1 / 5;
-}
-
 /* 🎯 DETAILS SECTION */
-.detail{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    margin:20px;
+.detail {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
     flex-wrap: wrap;
 }
 
-/* 🧊 CARD STYLE (MATCH HOME) */
+/* 🧊 CARD STYLE */
 .info,
 .description,
-.contact{
-    background: linear-gradient(145deg,#2a2a2a,#111);
+.contact {
+    background: linear-gradient(145deg, #2a2a2a, #111);
     border-radius: 16px;
     color: white;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
 /* INFO */
-.info{
-    padding:15px;
-    min-width:250px;
+.info {
+    padding: 15px;
+    min-width: 250px;
 }
 
-.info p{
-    margin:10px 0;
+.info p {
+    margin: 10px 0;
 }
 
-.info-text{
-    color:#d4a373;
+.info-text {
+    color: #d4a373;
 }
 
 /* DESCRIPTION */
-.description{
-    padding:20px;
-    max-width:300px;
-    text-align:center;
+.description {
+    padding: 20px;
+    max-width: 300px;
+    text-align: center;
 }
 
 /* CONTACT */
-.contact{
-    padding:15px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+.contact {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
+/* BUTTON STYLE */
 .contact a {
     display: flex;
     align-items: center;
@@ -179,30 +189,36 @@ body::before {
 
     background: #333;
     color: white;
-
     text-decoration: none;
 
     box-shadow: inset 0 0 15px rgba(255,255,255,0.2);
     transition: 0.3s;
 }
 
+/* ICON SIZE FIX */
 .icon-img {
-    width: 22px;   /* 🔥 KEY FIX */
+    width: 22px;
     height: 22px;
     object-fit: contain;
 }
 
+/* HOVER EFFECTS (FIXED CONFLICT) */
+.contact a:hover {
+    transform: translateY(-5px);
+}
+
+/* TELEGRAM STYLE */
 .telegram-icon a:hover {
     box-shadow: inset 0 0 20px #2AABEE;
 }
 
-.contact a:hover{
-    transform:translateY(-5px);
-    box-shadow: inset 0 0 20px red;
+/* PHONE STYLE */
+.phone-icon a:hover {
+    box-shadow: inset 0 0 20px #4CAF50;
 }
 
 /* 👁 VIEWER */
-.viewer{
+.viewer {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.95);
@@ -212,50 +228,53 @@ body::before {
     z-index: 9999;
 }
 
-.viewer img{
-    max-width:90%;
-    max-height:90%;
+.viewer img {
+    max-width: 90%;
+    max-height: 90%;
 }
 
 .viewer-arrow,
-.viewer-close{
-    position:absolute;
-    color:white;
-    font-size:30px;
-    background:none;
-    border:none;
-    cursor:pointer;
+.viewer-close {
+    position: absolute;
+    color: white;
+    font-size: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
-.viewer-close{
-    top:20px;
-    right:30px;
+.viewer-close {
+    top: 20px;
+    right: 30px;
 }
 
-.viewer-arrow.left{
-    left:20px;
-    top:50%;
+.viewer-arrow.left {
+    left: 20px;
+    top: 50%;
 }
 
-.viewer-arrow.right{
-    right:20px;
-    top:50%;
+.viewer-arrow.right {
+    right: 20px;
+    top: 50%;
 }
 
 /* 📱 MOBILE */
-@media (max-width:768px){
+@media (max-width: 768px) {
 
-.main{
-    grid-template-columns:1fr;
-}
+    .main {
+        grid-template-columns: 1fr;
+    }
 
-.product-image:first-child{
-    grid-row:auto;
-}
+    .product-image {
+        height: auto; /* 🔥 fix stretching */
+    }
 
-.detail{
-    flex-direction:column;
-    align-items:center;
-}
+    .product-image:first-child {
+        grid-row: auto;
+    }
 
+    .detail {
+        flex-direction: column;
+        align-items: center;
+    }
 }

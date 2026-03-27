@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    
+    <div id="transition-overlay"></div>
     <div class="ground-line"></div>
     <div class="header">
         <button class="back-button" onclick="history.back()">
@@ -20,12 +20,13 @@
 
         <a href="{% url 'product_list' %}" class="home">...</a>
 
-        <P></P>
     </div>
 
     <div class="main">
         {% for image in product.images.all %}
-            <img src="{{ image.image.url }}" loading="lazy" onclick="openViewer(this)" class="product-image">
+            {% if image.image %}
+                <img src="{{ image.image.url }}" loading="lazy" onclick="openViewer(this)" class="product-image">
+            {% endif %}
         {% endfor %}
     </div>
 
@@ -119,24 +120,18 @@
     <script>
         let startX = 0
 
-        viewer.addEventListener("touchstart", e=>{
-            startX = e.touches[0].clientX
-        })
+        if (viewer) {
+        viewer.addEventListener("touchstart", e => {
+            startX = e.touches[0].clientX;
+        });
 
-        viewer.addEventListener("touchend", e=>{
+        viewer.addEventListener("touchend", e => {
+            let endX = e.changedTouches[0].clientX;
 
-            let endX = e.changedTouches[0].clientX
-        
-
-        if(startX - endX > 50){
-            nextImage()
-        }
-
-        if(endX - startX > 50){
-            prevImage()
-        }
-
-    })
+            if (startX - endX > 50) nextImage();
+            if (endX - startX > 50) prevImage();
+        });
+    }
     </script>
 
    
@@ -147,7 +142,9 @@
         document.body.classList.add("page-visible");
 
         setTimeout(() => {
-            overlay.classList.add("hidden");
+            if (overlay) {
+                overlay.classList.add("hidden");
+            }
         }, 200);
     });
 
@@ -160,7 +157,9 @@
             e.preventDefault();
             const url = link.href;
 
-            overlay.classList.remove("hidden");
+            if (overlay) {
+                overlay.classList.remove("hidden");
+            }
             document.body.classList.remove("page-visible");
 
             setTimeout(() => {
