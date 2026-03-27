@@ -54,125 +54,120 @@
 </div>
 
 <script>
-
-const dustContainer = document.querySelector(".dust-container");
-const ground = document.querySelector(".ground-line");
 document.addEventListener("DOMContentLoaded", () => {
 
-const carousel = document.querySelector(".carousel");
-const cards = document.querySelectorAll(".carousel-card");
+    const carousel = document.querySelector(".carousel");
+    const cards = document.querySelectorAll(".carousel-card");
+    const dustContainer = document.querySelector(".dust-container");
+    const ground = document.querySelector(".ground-line");
 
-/* 🎯 ACTIVE CARD */
-function updateActiveCard() {
-    let center = carousel.scrollLeft + carousel.offsetWidth / 2;
+    if (!carousel || !ground) return; // 🛡 prevent crash
 
-    let closest = null;
-    let min = Infinity;
+    /* 🎯 ACTIVE CARD */
+    function updateActiveCard() {
+        let center = carousel.scrollLeft + carousel.offsetWidth / 2;
 
-    cards.forEach(card => {
-        let cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        let dist = Math.abs(center - cardCenter);
+        let closest = null;
+        let min = Infinity;
 
-        if (dist < min) {
-            min = dist;
-            closest = card;
-        }
+        cards.forEach(card => {
+            let cardCenter = card.offsetLeft + card.offsetWidth / 2;
+            let dist = Math.abs(center - cardCenter);
+
+            if (dist < min) {
+                min = dist;
+                closest = card;
+            }
+        });
+
+        cards.forEach(c => c.classList.remove("active"));
+        if (closest) closest.classList.add("active");
+    }
+
+    /* 🎯 SNAP */
+    function snapToCenter() {
+        const active = document.querySelector(".carousel-card.active");
+        if (!active) return;
+
+        const left = active.offsetLeft - (carousel.offsetWidth / 2) + (active.offsetWidth / 2);
+
+        carousel.scrollTo({ left, behavior: "smooth" });
+    }
+
+    /* 🖱 DESKTOP DRAG */
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    carousel.addEventListener("mousedown", e => {
+        isDown = true;
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
     });
 
-    cards.forEach(c => c.classList.remove("active"));
-    if (closest) closest.classList.add("active");
-}
+    carousel.addEventListener("mouseleave", () => isDown = false);
+    carousel.addEventListener("mouseup", () => isDown = false);
 
-/* 🎯 SNAP */
-function snapToCenter() {
-    const active = document.querySelector(".carousel-card.active");
-    if (!active) return;
+    carousel.addEventListener("mousemove", e => {
+        if (!isDown) return;
+        e.preventDefault();
 
-    const left = active.offsetLeft - (carousel.offsetWidth / 2) + (active.offsetWidth / 2);
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
 
-    carousel.scrollTo({ left, behavior: "smooth" });
-}
+        carousel.scrollLeft = scrollLeft - walk;
+    });
 
+    /* 🌾 DUST */
+    let lastDust = 0;
 
-/* 🖱 DESKTOP DRAG */
-let isDown = false;
-let startX;
-let scrollLeft;
+    function createDust() {
+        if(Date.now() - lastDust < 50) return;
+        lastDust = Date.now();
 
-carousel.addEventListener("mousedown", e => {
-    isDown = true;
-    startX = e.pageX - carousel.offsetLeft;
-    scrollLeft = carousel.scrollLeft;
-});
+        const active = document.querySelector(".carousel-card.active");
+        if (!active) return;
 
-carousel.addEventListener("mouseleave", () => isDown = false);
-carousel.addEventListener("mouseup", () => isDown = false);
+        const rect = active.getBoundingClientRect();
+        const groundY = ground.offsetTop;
 
-carousel.addEventListener("mousemove", e => {
-    if (!isDown) return;
-    e.preventDefault();
+        for (let i = 0; i < 6; i++) {
+            const d = document.createElement("div");
+            d.className = "dust";
 
-    const x = e.pageX - carousel.offsetLeft;
-    const walk = (x - startX) * 2;
+            d.style.left = rect.left + rect.width / 2 + "px";
+            d.style.top = groundY + "px";
 
-    carousel.scrollLeft = scrollLeft - walk;
-});
+            d.style.setProperty("--x", (Math.random() - 0.5) * 120 + "px");
+            d.style.setProperty("--y", -Math.random() * 100 + "px");
 
-/* 🌾 DUST */
-let lastDust = 0;
+            dustContainer.appendChild(d);
 
-function createDust() {
-    if(Date.now() - lastDust < 50) return;
-    lastDust = Date.now();
-
-    const active = document.querySelector(".carousel-card.active");
-    if (!active) return;
-
-    const  rect = active.getBoundingClientRect();
-    const groundY = ground.offsetTop;
-
-    for (let i = 0; i < 6; i++) {
-        const d = document.createElement("div");
-        d.className = "dust";
-
-        d.style.left = rect.left + rect.width / 2 + "px";
-        d.style.top = groundY + "px";
-
-        d.style.setProperty("--x", (Math.random() - 0.5) * 120 + "px");
-        d.style.setProperty("--y", -Math.random() * 100 + "px");
-
-        dustContainer.appendChild(d);
-
-        setTimeout(() => d.remove(), 1000);
+            setTimeout(() => d.remove(), 1000);
+        }
     }
-}
 
-carousel.addEventListener("scroll", () => {
+    /* EVENTS */
+    carousel.addEventListener("scroll", () => {
+        updateActiveCard();
+        createDust();
+    });
+
+    let timeout;
+    carousel.addEventListener("scroll", () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(snapToCenter, 120);
+    });
+
     updateActiveCard();
-    createDust();
-});
 
-let timeout;
-carousel.addEventListener("scroll", () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(snapToCenter, 120);
-});
-
-window.addEventListener("load", () => {
-    updateActiveCard();
-});
-
-
-
-/* 🔥 SAFE TRANSITION */
-const overlay = document.getElementById("transition-overlay");
-
-window.addEventListener("load", () => {
-    overlay.classList.add("hidden");
-});
+    /* 🔥 TRANSITION */
+    const overlay = document.getElementById("transition-overlay");
+    if (overlay) {
+        window.addEventListener("load", () => {
+            overlay.classList.add("hidden");
+        });
+    }
 
 });
 </script>
-
-</body>
-</html>
