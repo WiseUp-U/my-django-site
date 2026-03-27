@@ -11,6 +11,7 @@
 
 <body>
     <div id="transition-overlay"></div>
+    <div class="ground-line"></div>
     <div class="header">
         <button class="back-button" onclick="history.back()">
             <span>⟨</span>
@@ -44,12 +45,16 @@
             
             <div class="icon">
                 <div class="phone-icon">
-                    <a href="tel:+959979374737"><strong>{% trans "Phone:" %} </strong>0912345678</a>
+                    <a href="tel:+95912345678">
+                        📞 <span>0912345678</span>
+                    </a>
                 </div>
                 
                 <div class="telegram-icon">
-                    <a href="https://t.me/@rustin_cohle666"><strong>{% trans "Telegram" %}</strong>
-                    <img src="{% static 'images/telegramicon.png' %}" class="icon-img"></a>
+                    <a href="https://t.me/rustin_cohle666">
+                        <img src="{% static 'images/telegramicon.png' %}" class="icon-img">
+                        <span>{% trans "Telegram" %}</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -138,19 +143,20 @@
     <script>
     const overlay = document.getElementById("transition-overlay");
 
-    window.addEventListener("pageshow", () =>{
+    window.addEventListener("pageshow", () => {
         document.body.classList.add("page-visible");
 
-        setTimeout(()=>{
+        setTimeout(() => {
             overlay.classList.add("hidden");
-        },200);
+        }, 200);
     });
 
-    document.querySelectorAll('a[href]').forEach(link => {
+    /* PAGE TRANSITION */
+    document.querySelectorAll("a[href]").forEach(link => {
         if(link.hostname !== window.location.hostname) return;
         if(link.getAttribute("href").startsWith("#")) return;
 
-        link.addEventListener('click', e => {
+        link.addEventListener("click", e => {
             e.preventDefault();
             const url = link.href;
 
@@ -159,10 +165,9 @@
 
             setTimeout(() => {
                 window.location = url;
-            }, 500);
+            }, 400);
         });
     });
-
     </script>
     
 </body>
