@@ -17,6 +17,7 @@
 
     <div class="hero-overlay"></div>
     <div class="dust-container"></div>
+    <div class="ground-line"></div>
 
     <div class="hero-content">
          <!-- Language -->
@@ -37,7 +38,6 @@
                     <div class="carousel-image-wrapper">
                         <img src="{{ product.image.url }}" loading="lazy">
                     </div>
-                    <div class="card-year">{{ product.year }}</div>
                 </div>
 
                 <a href="{% url 'product_detail' product.id %}">
@@ -90,14 +90,6 @@ function snapToCenter() {
     carousel.scrollTo({ left, behavior: "smooth" });
 }
 
-let timeout;
-
-carousel.addEventListener("scroll", () => {
-    updateActiveCard();
-
-    clearTimeout(timeout);
-    timeout = setTimeout(snapToCenter, 100);
-});
 
 /* 🖱 DESKTOP DRAG */
 let isDown = false;
@@ -124,36 +116,50 @@ carousel.addEventListener("mousemove", e => {
 });
 
 /* 🌾 DUST */
-const dustContainer = document.querySelector(".dust-container");
+let lastDust = 0;
 
-function createDust(x, y) {
-    const d = document.createElement("div");
-    d.className = "dust";
+function createDust() {
+    if(Date.now() - lastDust < 50) return;
+    lastDust = Date.now();
 
-    d.style.left = x + "px";
-    d.style.top = y + "px";
+    const active = document.querySelector(".carousel-card.active");
+    if (!active) return;
 
-    dustContainer.appendChild(d);
+    const  rect = active.getBoundingClientRect();
+    const groundY = ground.offsetTop;
 
-    setTimeout(() => d.remove(), 1000);
+    for (let i = 0; i < 6; i++) {
+        const d = document.createElement("div");
+        d.className = "dust";
+
+        d.style.left = rect.left + rect.width / 2 + "px";
+        d.style.top = groundY + "px";
+
+        d.style.setProperty("--x", (Math.random() - 0.5) * 120 + "px");
+        d.style.setProperty("--y", -Math.random() * 100 + "px");
+
+        dustContainer.appendChild(d);
+
+        setTimeout(() => d.remove(), 1000);
+    }
 }
 
-let scrolling = false;
-
 carousel.addEventListener("scroll", () => {
-    if (!scrolling) {
-        scrolling = true;
-
-        for (let i = 0; i < 4; i++) {
-            createDust(
-                window.innerWidth/2 + (Math.random()-0.5)*200,
-                window.innerHeight*0.75
-            );
-        }
-
-        setTimeout(() => scrolling = false, 120);
-    }
+    updateActiveCard();
+    createDust();
 });
+
+let timeout;
+carousel.addEventListener("scroll", () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(snapToCenter, 120);
+});
+
+window.addEventListener("load", () => {
+    updateActiveCard();
+});
+
+
 
 /* 🔥 SAFE TRANSITION */
 const overlay = document.getElementById("transition-overlay");
